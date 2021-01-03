@@ -24,7 +24,6 @@ RankValue = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9'
 SuitSymbols = {'Hearts': '♡', 'Clubs': '♣', 'Spades': '♠', 'Diamonds': '♢'}
 
 class Card:
-	""" Card Class - Single Playing Card """
 
 	def __init__(self, rank, suit):
 		""" Class Constructor
@@ -37,31 +36,19 @@ class Card:
 		self.isjoker = False
 
 	def __str__(self):
-		""" Helper for builtin __str__ function
-		Args: No args.
-		Returns: String representation of the Card.  For Joker a "-J" is added.
-			     eg. 4 of Hearts, returns 4♡ 
-				 and if it is a Joker returns 4♡-J
-		"""
+
 		if self.isjoker:
 			return (self.rank + SuitSymbols[self.suit] + '-J')
 		return (self.rank + SuitSymbols[self.suit])
 
 	def is_joker(self):
-		"""Status check to see if this Card is a Joker
-		Args: No arguments
-		Returns: True or False
-		"""
+
 		return self.isjoker
 
 class Deck:
-	""" Deck Class - Models the card Deck """
 
 	def __init__(self, packs):
-		""" Class Constructor
-		Args: Packs: Number of packs used to create the Deck - int value
-		Returns: No return value
-		"""
+
 		self.packs = packs
 		self.cards = []
 		self.joker = None
@@ -72,28 +59,17 @@ class Deck:
 					self.cards.append(Card(r, s))
 
 	def shuffle(self):
-		""" Shuffle the Deck, so that cards are ordered in a random order
-		Args: No args
-		Returns: No return value
-		"""
+
 		random.shuffle(self.cards)
 
 	def draw_card(self):
-		""" Draw a card from the top of the Deck
-		Args: No args
-		Returns: A Card Object
-		"""
+
 		a = self.cards[0]
 		self.cards.pop(0)
 		return a
 
 	def set_joker(self):
-		""" Set the Joker Cards in the Deck
-		A Card is selected at random from the deck as Joker.
-		All cards with the same Rank are also set to Jokers.
-		Args: No args
-		Returns: No returns
-		"""
+
 		self.joker = random.choice(self.cards)
 
 		self.cards.remove(self.joker)
@@ -103,25 +79,16 @@ class Deck:
 				card.isjoker = True
 
 class Player:
-	""" Player Class - Models Players Hand and play actions """
 
 	def __init__(self, name, deck, game):
-		""" Class Constructor
-		Args: name: Name of the Player
-			  deck: Reference to the Deck Object that is part of the Game
-			  game: Reference to the Game object that is being played now
-		Returns: No return value
-		"""
+
 		self.stash = []
 		self.name = name
 		self.deck = deck
 		self.game = game
 
 	def deal_card(self, card):
-		""" Deal a Card to the Player
-		Args: Card:  The Card object provided to Player as part of the deal
-		Returns: No returns
-		"""
+
 		try:
 			self.stash.append(card)
 			if len(self.stash) > 14:
@@ -130,11 +97,7 @@ class Player:
 			print(err.args)
 
 	def drop_card(self, card):
-		""" Drop Card operation by the Player
-		Args: Card: The player input representation of the Card object 
-			  that needs to be dropped.  For example: AC for Ace of Clubs
-		Returns: No returns
-		"""
+
 		card = get_object(self.stash, card)
 
 		if card not in self.stash:
@@ -148,10 +111,7 @@ class Player:
 
 
 	def close_game(self):
-		""" Close Game operation by the Player
-		Args: No args
-		Returns: Success or Failure as True/False
-		"""
+
 		set_array = [self.stash[:3], self.stash[3:6], self.stash[6:9], self.stash[9:]]
 
 		count = 0
@@ -168,10 +128,7 @@ class Player:
 		return True
 
 	def play(self):
-		""" Play a single turn by Player
-		Args: No args
-		Returns: Success or Failure as True/False
-		"""
+
 		while True:
 			print(chr(27)+"[2J")
 			print("***",self.name,"your cards are:")
@@ -273,14 +230,9 @@ class Player:
 				input("Enter to continue ....")
 
 class Game:
-	""" Game Class - Models a single Game """ 
 
 	def __init__(self, hands, deck):
-		""" Class Constructor 
-			Args: Hands:  represents the number of players in the game - an int
-				  Deck: Reference to Deck Object
-			Returns: No returns
-		"""
+
 		self.pile = []
 		self.players = []
 
@@ -289,37 +241,25 @@ class Game:
 			self.players.append(Player(name, deck, self))
 
 	def display_pile(self):
-		""" Displays the top of the Pile.
-			Args: No args.
-			Returns: No returns
-		"""
+
 		if len(self.pile) == 0:
 			print("Empty pile.")
 		else:
 			print("The card at the top of the pile is: ", self.pile[0])
 
 	def add_pile(self, card):
-		""" Adds card to the top of the Pile.
-			Args: Card:  The card that is added to top of the Pile
-			Returns: No returns
-		"""
+
 		self.pile.insert(0, card)
 
 	def draw_pile(self):
-		""" Draw the top card from the Pile.
-			Args: No args
-			Returns: Returns the top Card from the Pile - Card Object
-		"""
+
 		if len(self.pile) != 0:
 			return self.pile.pop(0)
 		else:
 			return None
 
 	def play(self):
-		""" Play the close_game.
-			Args: No args
-			Returns: No returns
-		"""
+
 		i = 0
 		while self.players[i].play() == False:
 			print(chr(27)+"[2J")
@@ -333,10 +273,7 @@ class Game:
 		print("*** ", self.players[i].name, " Won the game ***")
 
 def is_valid_book(sequence):
-	""" Check if the sequence is a valid book.
-		Args: Sequence: an array of Card objects.  Array will have either 3 or 4 cards
-		Returns: Success or Failure as True/False
-	"""
+
 	while(sequence[0].isjoker == True):
 		sequence.append(sequence.pop(0))
 
@@ -349,10 +286,7 @@ def is_valid_book(sequence):
 	return True
 
 def is_valid_run(sequence):
-	""" Check if the sequence is a valid run.
-		Args: Sequence: an array of Card objects.  Array will have either 3 ro 4 cards
-		Returns: Success or Failure as True/False
-	"""
+
 	RankValue["A"] = 1
 	sort_sequence(sequence)
 
@@ -372,10 +306,6 @@ def is_valid_run(sequence):
 	return True
 
 def is_valid_run_joker(sequence):
-	""" Check if the sequence with Jokers is a valid run.
-		Args: Sequence: an array of Card objects.  Array will have either 3 ro 4 cards
-		Returns: Success or Failure as True/False
-	"""
 
 	RankValue["A"] = 1
 	sort_sequence(sequence)
@@ -414,10 +344,7 @@ def is_valid_run_joker(sequence):
 	return True
 
 def push_joker_toend(sequence):
-	""" Push Joker to the end of the sequence.
-		Args: Sequence: sequence of Card Objects.
-		Returns: No return
-	"""
+
 	sort_sequence(sequence)
 	joker_list = []
 	for card in sequence:
@@ -428,12 +355,7 @@ def push_joker_toend(sequence):
 	return sequence
 
 def get_object(arr, str_card):
-	""" Get Card Object using its User Input string representation
-	Args: arr: array of Card objects
-		  str_card: Card descriptor as described by user input, that is a 2 character
-		  string of Rank and Suit of the Card.  For example, KH for King of Hearts.
-	Returns: Object pointer corresponding to string, from the arr
-	"""
+
 	if len(str_card) != 2:
 		return None
 
@@ -444,20 +366,14 @@ def get_object(arr, str_card):
 	return None
 
 def print_cards(arr):
-	""" Print Cards in a single line
-		Args: arr: array of Card Objects
-		Returns: a visible string representation of the Cards in the arr
-	"""
+
 	s = ""
 	for card in arr:
 		s = s + " " + str(card)
 	return s
 
 def sort_sequence(sequence):
-	""" Sort the Cards in sequence in the increasing order of Rank values
-		Args: Sequence: array of Card objects
-		Returns: Sorted sequence.
-	"""
+
 	is_sort_complete = False
 
 	while is_sort_complete == False:
@@ -471,12 +387,9 @@ def sort_sequence(sequence):
 	return sequence
 
 def unit_tests():
-	""" Unit Tests for Checking various aspects of the program
-		Args: No args
-		Returns: No returns.
-	"""
+
 	print("Running Unit Tests")
-	"""
+
 	#test 1 - check players deal card exception handling
 
 	player = Player("Karen", None, None)
@@ -495,7 +408,7 @@ def unit_tests():
 	player.deal_card(Card("2", "Hearts"))
 	player.deal_card(Card("T", "Spades"))
 	player.deal_card(Card("T", "Hearts"))
-	"""
+
 
 	#test 2 - check close game
  
@@ -532,7 +445,6 @@ def unit_tests():
 	player2.deal_card(Card("2", "Spades"))
 	assert (player2.close_game() == False)
 
-	"""
 	#test 3 - testing ace values
  
 	player3 = Player("Tobias", None, None)
@@ -565,7 +477,7 @@ def unit_tests():
 	print(print_cards(player5.stash))
 	assert (is_valid_run_joker(player5.stash) == True)
 	
-    #test 6 - testing is_valid_run
+    	#test 6 - testing is_valid_run
 
 	player6 = Player("Nobby", None, None)
 	player6.deal_card(Card("8", "Diamonds"))
@@ -587,7 +499,6 @@ def unit_tests():
 	print(print_cards(player7.stash))
 	push_joker_toend(player7.stash)
 	print(print_cards(player7.stash))
-	"""
 
 def main():
 
